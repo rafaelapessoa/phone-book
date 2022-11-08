@@ -1,27 +1,52 @@
 package com.api.phonebook.controllers;
 
 import com.api.phonebook.models.PhoneBook;
-import com.api.phonebook.repositories.PhoneBookRepository;
+import com.api.phonebook.service.PhoneBookService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/contact")
 public class ContactController {
 
     @Autowired
-    private PhoneBookRepository phoneBookRepository;
+    private PhoneBookService phoneBookService;
 
     @GetMapping
-    public List<PhoneBook> listar(){
-        return phoneBookRepository.findAll();
+    public ResponseEntity<List<PhoneBook>> findAll() {
+        return new ResponseEntity<>(phoneBookService.findAll(), HttpStatus.OK);
     }
 
     @PostMapping
-        public PhoneBook adicionar (@RequestBody PhoneBook phoneBook){
-        return phoneBookRepository.save(phoneBook);
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<PhoneBook> create(@RequestBody PhoneBook phoneBook) {
+        return new ResponseEntity<>(phoneBookService.create(phoneBook), HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Object> getOnePhoneBook(@PathVariable(value = "id") long id){
+        Optional<PhoneBook> phoneBookOptional = phoneBookService.findById(id);
+        if (!phoneBookOptional.isPresent()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contact not found!");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(phoneBookOptional.get());
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public ResponseEntity<Object> deletePhoneBook(@PathVariable(value = "id") long id){
+        Optional<PhoneBook> phoneBookOptional = phoneBookService.findById(id);
+        if (!phoneBookOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contact not found!");
+        }
+        phoneBookService.delete(phoneBookOptional.get());
+        return ResponseEntity.status(HttpStatus.OK).body("Contact deleted successfully.");
     }
 
 
