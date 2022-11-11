@@ -29,7 +29,6 @@ public class ContactController {
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Object> getOnePhoneBook(@PathVariable(value = "id") long id){
         Optional<PhoneBook> phoneBookOptional = phoneBookService.findById(id);
         if (!phoneBookOptional.isPresent()){
@@ -39,7 +38,6 @@ public class ContactController {
     }
 
     @DeleteMapping("/{id}")
-    @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Object> deletePhoneBook(@PathVariable(value = "id") long id){
         Optional<PhoneBook> phoneBookOptional = phoneBookService.findById(id);
         if (!phoneBookOptional.isPresent()) {
@@ -49,5 +47,15 @@ public class ContactController {
         return ResponseEntity.status(HttpStatus.OK).body("Contact deleted successfully.");
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Object> updatePhoneBook(@PathVariable(value = "id") long id){
+        Optional<PhoneBook> phoneBookOptional = phoneBookService.findById(id);
+        if (!phoneBookOptional.isPresent()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contact not found!");
+        }
+        var phoneBook = phoneBookOptional.get();
+        phoneBook.setPhoneNumber(phoneBook.getPhoneNumber());
+        return ResponseEntity.status(HttpStatus.OK).body(phoneBookService.save(phoneBook));
+    }
 
 }

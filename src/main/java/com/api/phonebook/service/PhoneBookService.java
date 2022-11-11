@@ -18,13 +18,10 @@ public class PhoneBookService {
 
     public List<PhoneBook> findAll() {
         List<PhoneBook> phones = phoneBookRepository.findAll();
-        //TODO star logic
 
         for (PhoneBook  p: phones){
             p.setName(p.getName().toUpperCase());
         }
-
-        //TODO end logic
         return phones;
     }
     public PhoneBook create(PhoneBook phoneBook) {
@@ -32,10 +29,19 @@ public class PhoneBookService {
     }
 
     public Optional<PhoneBook> findById(long id) {
+
         return phoneBookRepository.findById(id);
     }
 
     public void delete(PhoneBook phoneBook) {
         phoneBookRepository.delete(phoneBook);
+    }
+
+    public PhoneBook update(PhoneBook phoneBook) {
+        return phoneBookRepository.save(phoneBook);
+    }
+
+    public PhoneBook save(PhoneBook phoneBook) {
+        return phoneBookRepository.save(phoneBook);
     }
 }
